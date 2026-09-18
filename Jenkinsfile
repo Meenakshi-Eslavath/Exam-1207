@@ -1,45 +1,49 @@
 pipeline {
     agent any
     stages {
-        
-        stage('Compile') {
+        stage('Checkout') {
             steps {
-                echo "Compile"
-                bat 'javac factorial.java test_factorial.java'
+                echo "Cloning repository..."
+                git branch: 'main', url: 'https://github.com/bhavyapokala2/week5devops.git'
             }
         }
-        stage('Test'){
-            steps{
-                echo "Test"
-                bat 'java test_factorial'
+        stage('Compile') {
+            steps {
+                echo "Compiling Java files..."
+                bat 'javac Factorial.java TestFactorial.java'
+            }
+        }
+        stage('Test') {
+            steps {
+                echo "Running Test..."
+                bat 'java TestFactorial'
             }
         }
         stage('Run'){
             steps{
                 echo "Run"
-                bat 'java factorial'
+                bat 'java Factorial'
             }
         }
         stage('Package JAR'){
             steps{
                 echo "Build"
-                bat 'jar cfm factorial.jar manifest.txt factorial.class'
+                bat 'jar cfm factorial.jar manifest.txt Factorial.class'
             }
         }
         stage('Archive JAR'){
             steps{
                 echo "Deploy"
-                archiveArtifacts artifacts: 'factorial.jar'
+                archiveArtifacts artifacts:'factorial.jar'
             }
+        }         
+    }
+    post {
+        success {
+            echo 'Build,test,run and JAR creation Successful and artifact is ready!'
+        }
+        failure {
+            echo 'Build Failed!'
         }
     }
-    post{
-        success{
-            echo 'Build, test, run and JAR creation successful and artifact is ready!'
-        }
-        failure{
-            echo 'Build or test failed!'
-        }
-    }
-     
 }
