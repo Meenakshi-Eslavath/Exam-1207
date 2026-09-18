@@ -6,5 +6,6 @@ public class TestFactorial {
         long result = Factorial.calculate(n);
 
         System.out.println("result is " + result);
+        Systemo.out.println("Changes done in github")
     }
 }
